@@ -1,0 +1,2 @@
+# 53r
+django project
