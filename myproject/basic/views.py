@@ -5,6 +5,10 @@ from django.db import connection
 import json
 from django.views.decorators.csrf import csrf_exempt
 from basic.models import Student
+from basic.models import Users
+
+
+
 # Create your views here.
 
 def sample(request):
@@ -125,13 +129,6 @@ def addStudent(request):
 
     return JsonResponse({"error":"use post method"},status=400)  
 
-
-
-
-
-
-
-
 from .models import Post
 
 @csrf_exempt
@@ -204,4 +201,26 @@ def job1(request):
    return JsonResponse({"message":"u have successfully applied for job1"},status=200)
 def job2(request):
    return JsonResponse({"message":"u have successfully applied for jo "})
+
+
+@csrf_exempt
+def signUp(request):
+    if request.method=='POST':
+        data = json.loads(request.body)
+        print(data)
+        user=Users.objects.create(
+            username=data.get('username'),
+            email=data.get('email'),
+            password=data.get('password')
+            )
+    return JsonResponse({"status":"success"},status=200)    
+
+# rules for username
+# should be unique
+# must be 3-20 characters
+# cannot starts with or ends with .,_
+# cannot have .. or __
+# no spaces
+# should contains letters ,numbers,dot,underscore
+
 
