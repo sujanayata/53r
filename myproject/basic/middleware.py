@@ -1,5 +1,7 @@
 from django.http import JsonResponse
 import re,json
+
+from basic.models import Users
 class basicMiddleware:
     def __init__(self, get_response):  #automatically give the response #start the server then it is run
 
@@ -104,3 +106,33 @@ class UsernameMiddleware:
 # basic email pattern
 # if duplicate email found-->email already exists 
 
+
+class EmailMiddleware:
+    def __init__(self,get_response):  
+        self.get_response=get_response
+    def __call__(self,request): 
+        if(request.path=="/signup/") :
+            data=json.loads(request.body)
+            email=data.get("email")
+            if not email:
+                return JsonResponse({"error":"email should not be empty"},status=400)
+            if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$',email):
+                return JsonResponse({"error":"invalid email format"},status=400)
+            if Users.objects.filter(email=email):
+                return JsonResponse({"error":"Email already exists"},status=400)
+        return self.get_response(request)    
+
+
+class PasswordMiddleware:
+    def __init__(self,get_response):  
+        self.get_response=get_response
+    def __call__(self,request): 
+        if(request.path=="/signup/") :
+            data=json.loads(request.body)
+            Password=data.get("password")
+            if not Password:
+                return JsonResponse({"error":"password should not empty"},status=400)
+            if not re.match(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^\w\s]).{8,}$',Password):
+                return JsonResponse({"error":"Password must contain at least 8 characters including uppercase, lowercase, number and special character"}, status=400)
+            
+        return self.get_response(request)                              

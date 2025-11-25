@@ -6,11 +6,11 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from basic.models import Student
 from basic.models import Users
+from django.contrib.auth.hashers import make_password,check_password
 
 
 
 # Create your views here.
-
 def sample(request):
     return HttpResponse('hello world')
 
@@ -59,34 +59,10 @@ def addStudent(request):
             "age": result.age
         }
         return JsonResponse(data)
-        print(result)
+        # print(result)
 
         
-        return JsonResponse({"status":"ok","data":result},status=200)
-        data=json.loads(request.body)
-        ref_age=data.get("age")
-        results=list(Student.objects.filter(age__gte=ref_age).values())
-        return JsonResponse({"status":"ok","data":results},status=200)
-    
-        data=json.loads(request.body)
-        ref_age=data.get("age")
-        results=list(Student.objects.filter(age__lte=ref_age).values())
-        return JsonResponse({"status":"ok","data":results},status=200)
         
-        # order by name
-        results=list(Student.objects.order_by('name').values())
-        return JsonResponse({"status":"ok","data":results},status=200)
-
-        # get unique ages
-        results=list(Student.objects.values("age").distinct())
-        return JsonResponse({"status":"ok","data":results},status=200)
-
-        # count total students
-        results=Student.objects.count()
-        return JsonResponse({"status":"ok","data":results},status=200)
-
-
-
     
     elif request.method=="PUT":
         data=json.loads(request.body)
@@ -197,10 +173,10 @@ def addPost(request):
 #     return JsonResponse({'total_students': total})'''
 
 
-def job1(request):
-   return JsonResponse({"message":"u have successfully applied for job1"},status=200)
-def job2(request):
-   return JsonResponse({"message":"u have successfully applied for jo "})
+# def job1(request):
+#    return JsonResponse({"message":"u have successfully applied for job1"},status=200)
+# def job2(request):
+#    return JsonResponse({"message":"u have successfully applied for jo "})
 
 
 @csrf_exempt
@@ -211,9 +187,41 @@ def signUp(request):
         user=Users.objects.create(
             username=data.get('username'),
             email=data.get('email'),
-            password=data.get('password')
+            password=make_password(data.get('password'))
             )
     return JsonResponse({"status":"success"},status=200)    
+
+
+@csrf_exempt
+def login(request):
+    if request.method=="POST":
+        data=request.POST
+        print(data)
+        username=data.get('username')
+        password=data.get("password")        
+        try:
+            user=Users.objects.get(username=username)
+            if check_password(password,user.password):
+                    return JsonResponse({"status":'successfully loggedin'},status=200)
+            else:
+                    return JsonResponse({"status":'failure','message':'invalid password'},status=400)
+        except Users.DoesNotExist:
+            return JsonResponse({"status":'failure','message':'user not found'},status=400)
+
+
+
+@csrf_exempt
+def check(request):
+    hashed="pbkdf2_sha256$870000$16lqSTM85dDYNKjEtL27RW$3K7iXJHC80KdB6EXIWEVGPZoItvb7sC3TDisNnZXwrY="
+    ipdata=request.POST
+    print(ipdata) 
+    # hashed=make_password(ipdata.get("ip"))
+    x=check_password(ipdata.get("ip"),hashed)
+    print(x)
+    return JsonResponse({"status":"success","data":x},status=200)
+ 
+
+
 
 # rules for username
 # should be unique

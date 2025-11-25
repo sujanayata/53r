@@ -53,7 +53,9 @@ MIDDLEWARE = [
     'basic.middleware.sscMiddleware',
     'basic.middleware.AgeMiddleware',
     'basic.middleware.MedicalFitMiddleware',
-    'basic.middleware.UsernameMiddleware'
+    'basic.middleware.UsernameMiddleware',
+    'basic.middleware.EmailMiddleware',
+    'basic.middleware.PasswordMiddleware'
 
 ]
 
