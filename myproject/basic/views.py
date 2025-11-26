@@ -207,9 +207,6 @@ def login(request):
                     return JsonResponse({"status":'failure','message':'invalid password'},status=400)
         except Users.DoesNotExist:
             return JsonResponse({"status":'failure','message':'user not found'},status=400)
-
-
-
 @csrf_exempt
 def check(request):
     hashed="pbkdf2_sha256$870000$16lqSTM85dDYNKjEtL27RW$3K7iXJHC80KdB6EXIWEVGPZoItvb7sC3TDisNnZXwrY="
@@ -218,9 +215,17 @@ def check(request):
     # hashed=make_password(ipdata.get("ip"))
     x=check_password(ipdata.get("ip"),hashed)
     print(x)
-    return JsonResponse({"status":"success","data":x},status=200)
- 
+    return JsonResponse({"status":"success","data":x},status=200) 
+@csrf_exempt
+def hash_all_passwords(request):
+    if request.method == "GET":   # or POST
+        users = Users.objects.all()
+        for user in users:
+            if not user.password.startswith("pbkdf2_sha256"):
+                user.password = make_password(user.password)
+                user.save()
 
+        return JsonResponse({"status": "success", "message": "All passwords hashed"}, status=200)
 
 
 # rules for username
