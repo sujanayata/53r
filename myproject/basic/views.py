@@ -7,8 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 from basic.models import Student
 from basic.models import Users
 from django.contrib.auth.hashers import make_password,check_password
-import jwt
+# import jwt
 from django.conf import settings
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+
 
 # Create your views here.
 def sample(request):
@@ -201,11 +204,14 @@ def login(request):
         password=data.get("password")        
         try:
             user=Users.objects.get(username=username)
+            issued_time=datetime.now(ZoneInfo("Asia/kolkata"))
+            expired_time=issued_time+timedelta(minutes=30)
+    
             if check_password(password,user.password):
                     # token="a json web token"
-                    payload={"username":username,"email":user.email,"id":user.id}
+                    payload={"username":username,"email":user.email,"id":user.id,"exp":expired_time}
                     token=jwt.encode(payload,settings.SECRET_KEY,algorithm="HS256")
-                    return JsonResponse({"status":'successfully loggedin','token':token},status=200)
+                    return JsonResponse({"status":'successfully loggedin','token':token,"issued_at":issued_time,"expired_at":issued_time,"expired_in":int((expired_time-issued_time).total_seconds()/60)},status=200)
             else:
                     return JsonResponse({"status":'failure','message':'invalid password'},status=400)
         except Users.DoesNotExist:
@@ -236,12 +242,10 @@ def hash_all_passwords(request):
         return JsonResponse({"status": "success", "message": "All passwords hashed"}, status=200)
 
 
-# rules for username
-# should be unique
-# must be 3-20 characters
-# cannot starts with or ends with .,_
-# cannot have .. or __
-# no spaces
-# should contains letters ,numbers,dot,underscore
+@csrf_exempt
+def getAllusers(request):
+    if request.method == "GET":
+        users = Users.objects.all().values()     # returns list of dicts
+        return JsonResponse(list(users), safe=False)
 
 

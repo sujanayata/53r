@@ -136,3 +136,19 @@ class PasswordMiddleware:
                 return JsonResponse({"error":"Password must contain at least 8 characters including uppercase, lowercase, number and special character"}, status=400)
             
         return self.get_response(request)                              
+    
+
+
+class authenticate_middleware():
+    def __init__(self,get_response):
+            self.get_response=get_response
+    def __call__(self,request):
+        if request.path=="/users/":
+            token=request.headers.get("Authorization")
+            print(token,"token")
+            if not token:
+                return JsonResponse({"error":"authorization token is missing"},staus=200)
+            token_value=token.split(" ")[1]
+            print(token_value,"token_value")
+
+        return self.get_response(request)    
