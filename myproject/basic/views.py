@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from basic.models import Student
 from basic.models import Users
 from django.contrib.auth.hashers import make_password,check_password
-# import jwt
+import jwt
 from django.conf import settings
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -245,7 +245,16 @@ def hash_all_passwords(request):
 @csrf_exempt
 def getAllusers(request):
     if request.method == "GET":
-        users = Users.objects.all().values()     # returns list of dicts
-        return JsonResponse(list(users), safe=False)
-
+        users = list(Users.objects.values()) # returns list of dicts
+        print(request.token_data,"token data in view") 
+        print(request.token_data.get("username"),"username from token") 
+        print(users,"userslist")
+        # return JsonResponse(list(users), safe=False)
+        for user in users:
+            print(user["username"],"username from users list")
+            if  user["username"] == request.token_data.get("username"):
+                return JsonResponse({"status":"success","loggedin_user":request.token_data,"data":users},status=200)
+        else:   
+                return JsonResponse({"error":"unauthorized access"},status=401)
+            
 
