@@ -1,32 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        h1{
-           color: blue;
-           background-color: aqua;
-           border:3px solid red;
-           display: inline-block;
-           padding: 25px;
-         }
-
-         a{
-            text-decoration: none;
-            background-color: brown;
-            color: antiquewhite;
-         }
-
-       
-
+        ul{
+            display: flex;
+            justify-content: space-between;
+            background-color: aqua;
+            border:3px solid;
+            padding: 10px;
+           
+        }
+        li{
+            list-style: none;
+           
+        }
     </style>
-      
-
 </head>
 <body>
-    <a href="{% url 'about' %}">About us</a>
-    <h1>welcome to homepage</h1>
+    
+    {%extends 'welcome.html'%}
+    {% block content%}
+    <h1>welcome to home page</h1>
+    {% endblock%}
+
 </body>
 </html>

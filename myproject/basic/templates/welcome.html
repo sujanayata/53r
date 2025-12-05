@@ -9,25 +9,33 @@
         ul{
             display: flex;
             justify-content: space-between;
+            background-color: aqua;
+            border:3px solid;
+            padding: 10px;  
+        }
+        li{
+            list-style: none;
+            text-decoration: none;
            
-
-
         }
     </style>
-
-
 </head>
 <body>
     <nav>
         <ul>
-            <li><a href="{%url 'home' %}">Home</a></li>
-            <li><a href="{%url 'about' %}"></a>about us</li>
-            <li><a href="{%url 'contact' %}"></a>contact us</li>
-            <li><a href="{%url 'services' %}"></a>services</li>
-            <li><a href="{%url 'projects' %}"></a>projects</li>      
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'about' %}">about us</a></li>
+            <li><a href="{% url 'contact' %}">contact us</a></li>
+            <li><a href="{% url 'services' %}">services</a></li>
+            <li><a href="{% url 'projects' %}">projects</a></li>      
         </ul>
     </nav>
+
+    {% block content%}
+
     <h1>welcome to django</h1>
+
+    {% endblock%}
 
 </body>
 </html>

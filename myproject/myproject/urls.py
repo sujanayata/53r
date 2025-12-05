@@ -22,7 +22,7 @@ from basic.views import sampleInfo
 from basic.views import dynamicresponse
 from basic.views import health
 from basic.views import addStudent
-from basic.views import addPost,signUp,check,login,hash_all_passwords,getAllusers,homerequest,aboutus,welcome
+from basic.views import addPost,signUp,check,login,hash_all_passwords,getAllusers,homerequest,aboutus,welcome,services,contact,projects
 
 
 urlpatterns = [
@@ -43,5 +43,8 @@ urlpatterns = [
     path('users/',getAllusers),
     path('home/',homerequest,name="home"),
     path('about/',aboutus,name="about"),
-    path('welcome/',welcome)
+    path('welcome/',welcome,name='welcome'),
+    path('contact/',contact,name='contact'),
+    path('services/',services,name='services'),
+    path('projects/',projects,name='projects'),
 ]
