@@ -258,3 +258,15 @@ def getAllusers(request):
                 return JsonResponse({"error":"unauthorized access"},status=401)
             
 
+
+
+def homerequest(request):
+    return render(request,"home.html")
+
+
+def aboutus(request):
+    return render(request,"about.html")
+
+
+def welcome(request):
+    return render(request,"welcome.html")
